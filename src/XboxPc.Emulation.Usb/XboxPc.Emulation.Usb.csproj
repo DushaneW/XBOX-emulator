@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>$(XpcTfm)</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XboxPc.Emulation.Core\XboxPc.Emulation.Core.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Input\XboxPc.Emulation.Input.csproj" />
+  </ItemGroup>
+</Project>

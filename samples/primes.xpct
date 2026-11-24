@@ -1,0 +1,31 @@
+XPCT 1
+; Original XBOX PC test program: prints every prime below 2000 (trial division by repeated subtraction).
+.name Primes below 2000
+    set r0 2            ; n
+    set r5 0            ; constant zero
+    set r7 2000         ; limit
+next:
+    jlt r0 r7 test
+    halt
+test:
+    set r1 2            ; divisor d
+try:
+    mov r2 r1
+    mul r2 r1           ; d*d
+    jlt r0 r2 prime     ; n < d*d  -> n is prime
+    mov r4 r0           ; remainder = n
+mod:
+    sub r4 r1
+    jz r4 composite     ; d divides n
+    jlt r4 r5 notdiv    ; went negative -> d does not divide n
+    jmp mod
+notdiv:
+    inc r1
+    jmp try
+composite:
+    inc r0
+    jmp next
+prime:
+    out r0
+    inc r0
+    jmp next

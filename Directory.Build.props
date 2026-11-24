@@ -1,0 +1,23 @@
+<Project>
+  <PropertyGroup>
+    <!-- Retarget to net10.0 when the .NET 10 SDK is installed (ADR-001). -->
+    <XpcTfm>net9.0</XpcTfm>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
+    <Version>0.1.0</Version>
+    <Company>XBOX PC project</Company>
+    <!-- Our own code is JIT-compiled fully optimised on first call (the framework keeps its precompiled code, so start-up
+         stays quick). With quick JIT the CPU interpreter ran at ~4 MIPS for the first seconds of every title. -->
+    <TieredCompilationQuickJit>false</TieredCompilationQuickJit>
+    <Product>XBOX PC</Product>
+  </PropertyGroup>
+  <!-- The emulator core is always compiled with optimisations: unoptimised, the CPU interpreter runs about 5x slower
+       and titles take tens of seconds to start. Debugging still works (symbols are kept). -->
+  <PropertyGroup Condition="$(MSBuildProjectName.StartsWith('XboxPc.Emulation.')) And !$(MSBuildProjectName.EndsWith('.Tests'))">
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+</Project>

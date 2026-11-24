@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>$(XpcTfm)</TargetFramework></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XboxPc.Emulation.X86\XboxPc.Emulation.X86.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Gpu.Nv2a\XboxPc.Emulation.Gpu.Nv2a.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Storage\XboxPc.Emulation.Storage.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Usb\XboxPc.Emulation.Usb.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Audio\XboxPc.Emulation.Audio.csproj" />
+  </ItemGroup>
+</Project>

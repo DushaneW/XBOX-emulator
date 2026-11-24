@@ -1,0 +1,99 @@
+# Command: xpcemu xbe-info homebrew/xpc-probe/bin/default.xbe
+Title        : XPC Probe (ID FFFF0002)
+Key kind     : Retail
+Base / image : 0x00010000 / 0x1B114 bytes
+Entry point  : 0x00016D10
+Kernel thunk : 0x00026DB4
+Sections:
+  .text        va 0x00011000 vsize 0x013000 raw 0x001000+0x012A00 X-
+  .rdata       va 0x00024000 vsize 0x003000 raw 0x014000+0x002EE4 --
+  .data        va 0x00027000 vsize 0x004000 raw 0x017000+0x000D50 -W
+  .tls         va 0x0002B000 vsize 0x000114 raw 0x018000+0x000004 -W
+Libraries:
+  CXBE0    0.0.0
+Kernel imports: 72 (53 implemented by HLE)
+  #54 InterlockedExchange, #250 ObfDereferenceObject, #1, #2, #3, #4, #8 DbgPrint, #24 ExQueryNonVolatileSetting, #44, #46 HalReadWritePCISpace, #49 HalReturnToFirmware, #67 IoCreateSymbolicLink, #69 IoDeleteSymbolicLink, #98, #99 KeDelayExecutionThread, #103 KeGetCurrentIrql, #104 KeGetCurrentThread, #107, #109, #119, #128 KeQuerySystemTime, #143, #164 LaunchDataPage, #165 MmAllocateContiguousMemory, #166 MmAllocateContiguousMemoryEx, #171 MmFreeContiguousMemory, #178 MmPersistContiguousMemory, #180 MmQueryAllocationSize, #184 NtAllocateVirtualMemory, #186 NtClearEvent, #187 NtClose, #189 NtCreateEvent, #190, #192 NtCreateMutant, #193 NtCreateSemaphore, #199 NtFreeVirtualMemory, #201, #202, #203 NtOpenSymbolicLinkObject, #205 NtPulseEvent, #208, #210, #211, #217, #218, #219 NtReadFile, #221 NtReleaseMutant, #222 NtReleaseSemaphore, #224 NtResumeThread, #225 NtSetEvent, #226, #231 NtSuspendThread, #235 NtWaitForMultipleObjectsEx, #233 NtWaitForSingleObject, #234 NtWaitForSingleObjectEx, #236 NtWriteFile, #238 NtYieldExecution, #246 ObReferenceObjectByHandle, #255 PsCreateSystemThreadEx, #258 PsTerminateSystemThread, #259 PsThreadObjectType, #277 RtlEnterCriticalSection, #289 RtlInitAnsiString, #291 RtlInitializeCriticalSection, #294 RtlLeaveCriticalSection, #301 RtlNtStatusToDosError, #302 RtlRaiseException, #306 RtlTryEnterCriticalSection, #337 XcSHAFinal, #335 XcSHAInit, #336 XcSHAUpdate, #326 XeImageFileName
+
+# Command: xpcemu run-xbe homebrew/xpc-probe/bin/default.xbe --trace
+--- DbgPrint output ---
+XPC-PROBE begin
+int crc32=614183ee last=f6e37410
+u64 q_hi=02a0a046 q_lo=30b99c3a r=22
+f64 basel_e9=1643934566
+f32 value_e3=5187
+XPC-PROBE end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 692ÿ769 in 129,3 ms (5,4 MIPS)
+Kernel calls : 64 (#8 DbgPrintž6, #24 ExQueryNonVolatileSettingž1, #46 HalReadWritePCISpacež1, #49 HalReturnToFirmwarež1, #54 InterlockedExchangež6, #67 IoCreateSymbolicLinkž1, #103 KeGetCurrentIrqlž1, #104 KeGetCurrentThreadž2, #128 KeQuerySystemTimež1, #184 NtAllocateVirtualMemoryž1, #187 NtClosež6, #192 NtCreateMutantž5, #203 NtOpenSymbolicLinkObjectž1, #221 NtReleaseMutantž7, #233 NtWaitForSingleObjectž7, #236 NtWriteFilež2, #255 PsCreateSystemThreadExž1, #277 RtlEnterCriticalSectionž1, #289 RtlInitAnsiStringž3, #291 RtlInitializeCriticalSectionž1, #294 RtlLeaveCriticalSectionž1, #301 RtlNtStatusToDosErrorž2, #335 XcSHAInitž1, #336 XcSHAUpdatež4, #337 XcSHAFinalž1)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 692ÿ769 cycles (0,945 ms at 733.33 MHz, 0 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+--- kernel call trace (cycle, thread, export, arguments -> result) ---
+        53 T1 #192 NtCreateMutant                 (0x29DD8, 0x0, 0x0) -> 0x0
+        66 T1 #335 XcSHAInit                      (0x29DDC) -> 0x0
+        76 T1 #24  ExQueryNonVolatileSetting      (0xFFFF, 0x3DE7C, 0x3DE84, 0x100, 0x3DE80) -> 0x0
+        86 T1 #336 XcSHAUpdate                    (0x29DDC, 0x3DE84, 0x100) -> 0x0
+       117 T1 #336 XcSHAUpdate                    (0x29DDC, 0x3DE58, 0x8) -> 0x0
+       144 T1 #233 NtWaitForSingleObject          (0x10, 0x0, 0x0) -> 0x0
+       184 T1 #336 XcSHAUpdate                    (0x29DDC, 0x3DF80, 0x8) -> 0x0
+       192 T1 #337 XcSHAFinal                     (0x29DDC, 0x3DFA4) -> 0x0
+       202 T1 #336 XcSHAUpdate                    (0x29DDC, 0x3DFC8, 0x4) -> 0x0
+       216 T1 #221 NtReleaseMutant                (0x10, 0x0) -> 0x0
+       275 T1 #192 NtCreateMutant                 (0x29124, 0x0, 0x0) -> 0x0
+       301 T1 #192 NtCreateMutant                 (0x27C94, 0x0, 0x0) -> 0x0
+       327 T1 #192 NtCreateMutant                 (0x27CD4, 0x0, 0x0) -> 0x0
+       353 T1 #192 NtCreateMutant                 (0x27D14, 0x0, 0x0) -> 0x0
+       456 T1 #46  HalReadWritePCISpace           (0x0, 0x60, 0x6C, 0x3DF94, 0x4, 0x0) -> 0x0
+       500 T1 #291 RtlInitializeCriticalSection   (0x2A14C) -> 0x0
+       553 T1 #54  InterlockedExchange            (0x2A044, 0x1) -> 0x0
+       595 T1 #128 KeQuerySystemTime              (0x3DEE0) -> 0x0
+       668 T1 #54  InterlockedExchange            (0x2A044, 0x0) -> 0x1
+       684 T1 #54  InterlockedExchange            (0x2A028, 0x1) -> 0x0
+       798 T1 #103 KeGetCurrentIrql               () -> 0x0
+       813 T1 #184 NtAllocateVirtualMemory        (0x3DE98, 0x0, 0x3DE9C, 0x3000, 0x4) -> 0x0
+      1570 T1 #54  InterlockedExchange            (0x2A028, 0x0) -> 0x1
+      1658 T1 #255 PsCreateSystemThreadEx         (0x3DF8C, 0x0, 0x10000, 0x114, 0x0, 0x170D0, 0x40008, 0x0, 0x0, 0x1E600) -> 0x0
+      1699 T1 #187 NtClose                        (0x24) -> 0x0
+      1720 T1 #0   <thread routine returned>      (0x1) -> (no return / blocked / stop)
+      1726 T2 #104 KeGetCurrentThread             () -> 0x60000
+      1730 T2 #104 KeGetCurrentThread             () -> 0x60000
+      6435 T2 #277 RtlEnterCriticalSection        (0x2A14C) -> 0x0
+      6476 T2 #294 RtlLeaveCriticalSection        (0x2A14C) -> 0x0
+      6517 T2 #54  InterlockedExchange            (0x2A028, 0x1) -> 0x0
+      6584 T2 #54  InterlockedExchange            (0x2A028, 0x0) -> 0x1
+      7415 T2 #289 RtlInitAnsiString              (0x5FE24, 0x5FE1D) -> 0x0
+      7425 T2 #203 NtOpenSymbolicLinkObject       (0x5FE2C, 0x5FE10) -> 0xC0000034
+      9320 T2 #289 RtlInitAnsiString              (0x5FE28, 0x5FE21) -> 0x0
+      9326 T2 #289 RtlInitAnsiString              (0x5FE18, 0x5FE58) -> 0x0
+      9332 T2 #67  IoCreateSymbolicLink           (0x5FE28, 0x5FE18) -> 0x0
+      9407 T2 #8   DbgPrint                       (0x26B93, 0x0, 0x0) -> 0x0
+    656610 T2 #8   DbgPrint                       (0x26ACE, 0x614183EE, 0xF6E37410) -> 0x0
+    656674 T2 #8   DbgPrint                       (0x26B75, 0x2A0A046, 0x30B99C3A) -> 0x0
+    673696 T2 #8   DbgPrint                       (0x26BB3, 0x61FC7366, 0x30B99C3A) -> 0x0
+    691710 T2 #8   DbgPrint                       (0x26BC4, 0x1443, 0x30B99C3A) -> 0x0
+    691713 T2 #8   DbgPrint                       (0x26BA4, 0x1443, 0x30B99C3A) -> 0x0
+    691735 T2 #187 NtClose                        (0x14) -> 0x0
+    691749 T2 #187 NtClose                        (0x18) -> 0x0
+    691763 T2 #187 NtClose                        (0x1C) -> 0x0
+    691777 T2 #187 NtClose                        (0x20) -> 0x0
+    691831 T2 #233 NtWaitForSingleObject          (0x18, 0x0, 0x0) -> 0xC0000008
+    691862 T2 #233 NtWaitForSingleObject          (0x14, 0x0, 0x0) -> 0xC0000008
+    691905 T2 #221 NtReleaseMutant                (0x14, 0x0) -> 0xC0000008
+    691943 T2 #187 NtClose                        (0xFFFFFFFF) -> 0x0
+    691990 T2 #221 NtReleaseMutant                (0x18, 0x0) -> 0xC0000008
+    692038 T2 #233 NtWaitForSingleObject          (0x1C, 0x0, 0x0) -> 0xC0000008
+    692069 T2 #233 NtWaitForSingleObject          (0x14, 0x0, 0x0) -> 0xC0000008
+    692112 T2 #221 NtReleaseMutant                (0x14, 0x0) -> 0xC0000008
+    692204 T2 #236 NtWriteFile                    (0xFFFFFFFF, 0x0, 0x0, 0x0, 0x5FEEC, 0x29529, 0x0, 0x0) -> 0xC0000008
+    692217 T2 #301 RtlNtStatusToDosError          (0xC0000008) -> 0x6
+    692366 T2 #221 NtReleaseMutant                (0x1C, 0x0) -> 0xC0000008
+    692410 T2 #233 NtWaitForSingleObject          (0x20, 0x0, 0x0) -> 0xC0000008
+    692441 T2 #233 NtWaitForSingleObject          (0x14, 0x0, 0x0) -> 0xC0000008
+    692484 T2 #221 NtReleaseMutant                (0x14, 0x0) -> 0xC0000008
+    692576 T2 #236 NtWriteFile                    (0xFFFFFFFF, 0x0, 0x0, 0x0, 0x5FEEC, 0x2992A, 0x0, 0x0) -> 0xC0000008
+    692589 T2 #301 RtlNtStatusToDosError          (0xC0000008) -> 0x6
+    692738 T2 #221 NtReleaseMutant                (0x20, 0x0) -> 0xC0000008
+    692769 T2 #49  HalReturnToFirmware            (0x2) -> (no return / blocked / stop)

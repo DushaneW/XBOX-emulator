@@ -1,0 +1,110 @@
+# M3 test-program runs: 2026-11-23T09:26Z, xpcemu Release, MINGW64_NT-10.0-26300
+# Kernel-call lines omitted. Wall times/MIPS depend on the host; virtual times are deterministic.
+
+$ xpcemu run-xbe homebrew/xpc-video-test/bin/default.xbe 200000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+Video        : 640x480 A8R8G8B8 fb=0x00071000; 32 vblanks; 30 interrupts, 30 DPCs delivered
+--- DbgPrint output ---
+XPC-VIDEO mode=640x480x32 vblanks=30 elapsed_ms=499
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 24 925 572 in 850,1 ms (29,3 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 391 112 280 cycles (533,335 ms at 733.33 MHz, 366 186 708 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+
+$ xpcemu run-xbe homebrew/xpc-fs-test/bin/default.xbe 200000000 --hdd <temp dir>
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+Video        : no mode set; 0 vblanks; 0 interrupts, 0 DPCs delivered
+File         : open \Device\CdRom0\input.txt (Opened)
+File         : open \Device\CdRom0\ (Opened)
+File         : open \Device\Harddisk0\Partition1\xpc (Created)
+File         : open \Device\Harddisk0\Partition1\xpc\data.bin (Created)
+File         : open \Device\Harddisk0\Partition1\xpc\data.bin (Opened)
+File         : open \Device\Harddisk0\Partition1\xpc\data.bin (Opened)
+File         : open \Device\Harddisk0\Partition1\ (Opened)
+File         : open \Device\Harddisk0\Partition1\xpc\keep.txt (Created)
+--- DbgPrint output ---
+XPC-FS begin
+read D:input.txt n=24 text=Hello from the XPC disc!
+write to D: refused
+D: entry default.xbe dir=0 size=110592
+D: entry input.txt dir=0 size=24
+D: entries=2
+mount E: ok
+wrote 3000 bytes checksum=592815d5
+read back 3000 bytes checksum=592815d5 byte1000=31 size=3000
+rename ok old_exists=0 new_exists=1
+disk space query ok nonzero_total=1
+delete of missing file failed as expected; keep.txt written
+XPC-FS end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 467 367 in 112,6 ms (4,2 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 467 367 cycles (0,637 ms at 733.33 MHz, 0 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+
+$ xpcemu run-xbe homebrew/xpc-input-test/bin/default.xbe 3000000000 --keys Space,W,L
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 5353 frames, 21 transfers; ports 1:XID(addr 2, configured, 1 reports, rumble 1234/5678) 2:- 3:- 4:-
+Video        : 640x480 A8R8G8B8 fb=0x00080000; 324 vblanks; 313 interrupts, 313 DPCs delivered
+--- DbgPrint output ---
+XPC-INPUT begin
+XPC-INPUT connected vid=045e pid=0202 type=0101
+XPC-INPUT report buttons=0000 a=255 b=0 x=0 y=0 black=0 white=0 lt=0 rt=0 lx=0 ly=32767 rx=32767 ry=0
+XPC-INPUT rumble sent
+XPC-INPUT end reports=1
+XPC-INPUT disconnected
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 65 774 770 in 1847,0 ms (35,6 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 3 964 406 880 cycles (5406,009 ms at 733.33 MHz, 3 898 632 110 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : USB0 OHCI read of unknown register 0x20C  0
+Unmodelled   : USB0 OHCI write of unknown register 0x20C = 0x0 ignored
+
+$ xpcemu run-xbe homebrew/xpc-audio-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 48 buffers, 76800 frames; S/PDIF 48 buffers; 96 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+Video        : no mode set; 96 vblanks; 48 interrupts, 48 DPCs delivered
+--- DbgPrint output ---
+XPC-AUDIO buffers=48 callbacks=48 elapsed_ms=1600
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 2 349 747 in 303,8 ms (7,7 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 1 173 511 870 cycles (1600,243 ms at 733.33 MHz, 1 171 162 123 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+
+$ xpcemu run-xbe <nxdk>/samples/triangle/bin/default.xbe 300000000   (third-party sample, built locally, not distributed)
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+Video        : 640x480 A8R8G8B8 fb=0x00080000; 2 vblanks; 0 interrupts, 0 DPCs delivered
+Stopped      : KernelExportUnimplemented
+Detail       : Kernel export #47 HalRegisterShutdownNotification is not implemented yet (called by thread 2 from 0x000173DF).
+Instructions : 24 702 308 in 771,1 ms (32,0 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 24 702 308 cycles (33,685 ms at 733.33 MHz, 0 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A read of unmodelled register 0x001804 (4 bytes)  0
+Unmodelled   : NV2A write of unmodelled register 0x001804 (4 bytes) = 0x4 - ignored
+Unmodelled   : NV2A write of unmodelled register 0x009140 (4 bytes) = 0x0 [PTIMER] - ignored
+Unmodelled   : NV2A read of unmodelled register 0x000200 (4 bytes)  0
+Unmodelled   : NV2A read of unmodelled register 0x100200 (4 bytes)  0 [PFB]
+Unmodelled   : NV2A read of unmodelled register 0x100204 (4 bytes)  0 [PFB]
+Unmodelled   : NV2A write of unmodelled register 0x001830 (4 bytes) = 0x0 - ignored
+Unmodelled   : NV2A write of unmodelled register 0x00180C (4 bytes) = 0xF800 - ignored
+Unmodelled   : NV2A write of unmodelled register 0x000200 (4 bytes) = 0xFFFFFFFF - ignored
+Unmodelled   : NV2A read of unmodelled register 0x680500 (4 bytes)  0 [PRAMDAC]

@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>$(XpcTfm)-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>XboxPc</AssemblyName>
+    <RootNamespace>XboxPc.DesktopApp</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- CA1822: view-model properties must be instance members for WPF data binding. -->
+    <NoWarn>$(NoWarn);CA1822</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XboxPc.Infrastructure\XboxPc.Infrastructure.csproj" />
+    <ProjectReference Include="..\XboxPc.Runtimes\XboxPc.Runtimes.csproj" />
+    <ProjectReference Include="..\XboxPc.Input\XboxPc.Input.csproj" />
+    <ProjectReference Include="..\XboxPc.Performance\XboxPc.Performance.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.OriginalXbox\XboxPc.Emulation.OriginalXbox.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Input\XboxPc.Emulation.Input.csproj" />
+    <ProjectReference Include="..\XboxPc.Emulation.Gpu.D3D12\XboxPc.Emulation.Gpu.D3D12.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\samples\*.xpct" Link="samples\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\docs\**\*.md" Link="docs\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

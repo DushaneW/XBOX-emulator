@@ -1,0 +1,157 @@
+# NV2A 3D runs - 2026-11-23T10:17Z, xpcemu Release. Kernel-call lines omitted; wall times/MIPS depend on the host.
+
+$ xpcemu run-xbe homebrew/xpc-3d-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 078 push-buffer words, 670 methods; 9 clears, 21 triangles, 192 240 pixels; host time clear 17 ms, vertex 1 ms, raster 173 ms
+Video        : 640x480 A8R8G8B8 fb=0x00230000; 9 vblanks; 27 interrupts, 27 DPCs delivered
+--- DbgPrint output ---
+XPC-3D begin
+XPC-3D background ff203040 red ffff0000 green ff00ff00 yellow ffffff00 overlap ff00ff00 white ffffffff
+XPC-3D triangle top fff70404 left ff08eb0c right ff080ceb centre ff545555 outside ff203040
+XPC-3D end frames=3
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 293 972 in 1859,2 ms (31,9 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 110 001 177 cycles (150,002 ms at 733.33 MHz, 50 707 205 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+
+$ xpcemu run-xbe <nxdk>/samples/triangle/bin/default.xbe 60000000   (third-party sample, built locally, not distributed; runs forever, stopped by budget)
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 8 096 push-buffer words, 5 676 methods; 939 clears, 18 triangles, 2 759 040 pixels; host time clear 26 ms, vertex 2 ms, raster 434 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 10 vblanks; 40 interrupts, 40 DPCs delivered
+Stopped      : BudgetExhausted
+Detail       : Instruction budget reached at EIP 0x00016ED5 (thread 2).
+Instructions : 60 000 000 in 2177,0 ms (27,6 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 122 275 772 cycles (166,740 ms at 733.33 MHz, 62 275 772 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A stencil test not implemented - ignored
+Unmodelled   : NV2A W-buffering (Z perspective) not implemented - depth uses oPos.z
+
+$ xpcemu run-xbe homebrew/xpc-texture-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 105 push-buffer words, 660 methods; 4 clears, 20 triangles, 59 392 pixels; host time clear 20 ms, vertex 2 ms, raster 80 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 8 vblanks; 21 interrupts, 21 DPCs delivered
+--- DbgPrint output ---
+XPC-TEX begin
+XPC-TEX A ff000000 ffa040e0 ffe0e000 B ff0000ff ff7bc284 C ffff0000 ff0000ff ffaa0055 00000000 D ff000000 ff202000 E ff504038
+XPC-TEX end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 321 291 in 1835,5 ms (32,3 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 97 778 955 cycles (133,335 ms at 733.33 MHz, 38 457 664 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+
+$ xpcemu run-xbe homebrew/xpc-ff-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 103 push-buffer words, 709 methods; 4 clears, 22 triangles, 70 480 pixels; host time clear 13 ms, vertex 1 ms, raster 73 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 8 vblanks; 21 interrupts, 21 DPCs delivered
+--- DbgPrint output ---
+XPC-FF begin
+XPC-FF A ff0080ff B ffe6804c C ff945738 D ffe61a33 E ffffffff ff404040 F ffffff00 ff404040
+XPC-FF end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 305 448 in 1729,8 ms (34,3 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 97 778 955 cycles (133,335 ms at 733.33 MHz, 38 473 507 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+
+$ xpcemu run-xbe homebrew/xpc-ff2-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 286 push-buffer words, 801 methods; 4 clears, 20 triangles, 40 960 pixels; host time clear 12 ms, vertex 2 ms, raster 44 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 8 vblanks; 21 interrupts, 21 DPCs delivered
+--- DbgPrint output ---
+XPC-FF2 begin
+XPC-FF2 S1 ff804000 S2 ff5d2e00 F ffff4040 T ff000000 ffa040e0 K ff00ff00 ff404040
+XPC-FF2 end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 336 242 in 1585,5 ms (37,4 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 97 778 955 cycles (133,335 ms at 733.33 MHz, 38 442 713 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+
+$ xpcemu run-xbe homebrew/xpc-blend-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 369 push-buffer words, 790 methods; 4 clears, 68 triangles, 158 400 pixels; host time clear 12 ms, vertex 1 ms, raster 179 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 8 vblanks; 21 interrupts, 21 DPCs delivered
+--- DbgPrint output ---
+XPC-BLEND begin
+XPC-BLEND 1 cfffbfbf 2 ffc0c0c0 3 00bf8040 4 ff336680 5 80406080 6 ff404040 b2ffff00 7 ff00ff00 ff0000ff ff404040 8 00ff00ff
+XPC-BLEND end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 417 250 in 1703,5 ms (34,9 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 97 778 955 cycles (133,335 ms at 733.33 MHz, 38 361 705 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros
+Unmodelled   : NV2A class 0x39 method 0x0180 = 0x1119 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x019C = 0x14D1 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x9F method 0x02FC = 0x3 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0184 = 0x1112 ignored (only the Kelvin 3D class is executed)
+Unmodelled   : NV2A class 0x62 method 0x0188 = 0x1117 ignored (only the Kelvin 3D class is executed)
+
+$ xpcemu run-xbe homebrew/xpc-2d-test/bin/default.xbe 400000000
+Audio (AC97) : PCM out 0 buffers, 0 frames; S/PDIF 0 buffers; 0 interrupts
+USB          : 0 frames, 0 transfers; ports 1:- 2:- 3:- 4:-
+NV2A 3D      : 1 421 push-buffer words, 844 methods; 8 clears, 28 triangles, 4 lines, 4 points, 30 500 pixels; 2D 2 blits, 2 memory copies; host time clear 13 ms, vertex 1 ms, raster 36 ms
+Video        : 640x480 A8R8G8B8 fb=0x00488000; 8 vblanks; 29 interrupts, 29 DPCs delivered
+--- DbgPrint output ---
+XPC-2D begin
+XPC-2D swizzle ffff0000 ff00ff00 ff0000ff ff0000ff aa ffffffff ffffffff ff000000 ff000000
+XPC-2D points ffffff00 ffffff00 ff404040 lines ff00ffff ff00ffff ff404040 ff404040 ffff00ff ffff00ff ff404040
+XPC-2D fill ff808080 ff808080 ff808080 ff404040 ff404040 ff404040
+XPC-2D blit ffff0000 ff0000ff ff404040 m2m 03020100 07060504 13121110 17161514
+XPC-2D end
+
+-----------------------
+Stopped      : TitleExited
+Detail       : Title called HalReturnToFirmware(2).
+Instructions : 59 359 208 in 1573,1 ms (37,7 MIPS)
+Threads      : 1:Terminated, 2:Ready
+Virtual time : 97 778 952 cycles (133,335 ms at 733.33 MHz, 38 419 744 idle cycles skipped)
+Unmodelled   : PCI config read bus 0 slot 0x60 (device 0, function 3) register 0x6C, 4 bytes: returned zeros

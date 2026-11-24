@@ -1,0 +1,20 @@
+# .NET build output
+bin/
+obj/
+TestResults/
+*.user
+*.suo
+.vs/
+.vscode/
+*.binlog
+
+# nxdk build intermediates (the built test programs that tests use live in tests/XboxPc.Emulation.Tests/Assets)
+homebrew/**/bin/
+homebrew/**/*.obj
+homebrew/**/*.exe
+homebrew/**/*.lib
+homebrew/**/*.c.d
+homebrew/**/*.iso
+
+# Local data
+*.log

@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>$(XpcTfm)</TargetFramework></PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\XboxPc.Runtime.Abstractions\XboxPc.Runtime.Abstractions.csproj" /></ItemGroup>
+</Project>

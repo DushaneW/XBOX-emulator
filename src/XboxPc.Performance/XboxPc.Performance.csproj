@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>$(XpcTfm)-windows</TargetFramework></PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\XboxPc.Domain\XboxPc.Domain.csproj" /></ItemGroup>
+</Project>

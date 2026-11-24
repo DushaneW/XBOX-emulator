@@ -1,0 +1,28 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Build
+        run: dotnet build XboxPc.sln -c Release
+
+      - name: App tests
+        run: dotnet test tests/XboxPc.Tests -c Release --no-build
+
+      - name: Emulator tests
+        run: dotnet test tests/XboxPc.Emulation.Tests -c Release --no-build
+
+      # The Direct3D 12 tests need a GPU; hosted runners have none (the software WARP device would take hours).
+      # Run them locally: dotnet test tests/XboxPc.Emulation.Gpu.Tests

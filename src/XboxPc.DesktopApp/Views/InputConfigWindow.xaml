@@ -1,0 +1,106 @@
+<Window x:Class="XboxPc.DesktopApp.Views.InputConfigWindow" Foreground="{StaticResource TextBrush}"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:app="clr-namespace:XboxPc.DesktopApp"
+        Title="Input configuration" Width="900" Height="820" MinWidth="700" MinHeight="520"
+        WindowStartupLocation="CenterOwner" Background="{StaticResource BgBrush}" ShowInTaskbar="False">
+    <Window.Resources>
+        <app:VisibilityConverter x:Key="Vis" />
+    </Window.Resources>
+    <DockPanel Margin="24,20">
+        <WrapPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="Restore defaults" Command="{Binding ResetCommand}" />
+            <Button Content="Close" IsCancel="True" Click="OnClose" />
+            <Button Content="Save and apply" Style="{StaticResource PrimaryButton}" Click="OnSave" />
+        </WrapPanel>
+        <TextBlock DockPanel.Dock="Bottom" Text="{Binding Message}" Foreground="{StaticResource WarnBrush}" TextWrapping="Wrap" Margin="0,8,0,0" />
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Input configuration" Style="{StaticResource H2}" Margin="0,0,0,4" />
+                <TextBlock Style="{StaticResource Muted}" FontSize="12" TextWrapping="Wrap">
+                    Controls how your PC devices drive the emulated Original Xbox controller on port 1 (ports 2-4 follow physical controllers 2-4).
+                    Click inside the emulator view to capture the mouse; the release key gives it back. Input reaches the game only while the emulator window has focus.
+                </TextBlock>
+
+                <TextBlock Text="Input mode" Style="{StaticResource Label}" Margin="0,16,0,4" />
+                <WrapPanel>
+                    <RadioButton Content="Xbox Controller" GroupName="mode" IsChecked="{Binding IsController}" Margin="0,0,18,0" Foreground="{StaticResource TextBrush}" />
+                    <RadioButton Content="Keyboard and Mouse" GroupName="mode" IsChecked="{Binding IsKeyboardMouse}" Margin="0,0,18,0" Foreground="{StaticResource TextBrush}" />
+                    <RadioButton Content="Hybrid (both at once)" GroupName="mode" IsChecked="{Binding IsHybrid}" Foreground="{StaticResource TextBrush}" />
+                </WrapPanel>
+
+                <Grid Margin="0,14,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition /><RowDefinition /><RowDefinition /></Grid.RowDefinitions>
+                    <TextBlock Text="Profile name" Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <TextBox Grid.Column="1" Text="{Binding ProfileName, UpdateSourceTrigger=PropertyChanged}" MaxLength="64" />
+                    <TextBlock Grid.Row="1" Text="Capture release key" Style="{StaticResource Label}" VerticalAlignment="Center" Margin="0,6,12,0" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding ReleaseCaptureKey, UpdateSourceTrigger=PropertyChanged}" Margin="0,6,0,0" />
+                    <CheckBox Grid.Row="2" Grid.ColumnSpan="2" Margin="0,8,0,0" IsChecked="{Binding UseForGame}" Visibility="{Binding HasGame, Converter={StaticResource Vis}}"
+                              Content="{Binding GameName}" ContentStringFormat="Use this profile for {0} (per-game profile)" />
+                </Grid>
+
+                <TextBlock Text="Bindings (keyboard keys and mouse buttons)" Style="{StaticResource Label}" Margin="0,18,0,4" />
+                <ItemsControl ItemsSource="{Binding Bindings}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200" /><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /><ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="1" Text="{Binding KeysText}" VerticalAlignment="Center" Foreground="{StaticResource Accent2Brush}" />
+                                <TextBlock Grid.Column="1" Text="press a key..." VerticalAlignment="Center" Foreground="{StaticResource WarnBrush}" HorizontalAlignment="Right"
+                                           Visibility="{Binding IsListening, Converter={StaticResource Vis}}" Margin="0,0,10,0" />
+                                <Button Grid.Column="2" Content="Rebind" Padding="10,3"
+                                        Command="{Binding DataContext.RebindCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                                <Button Grid.Column="3" Content="Clear" Padding="10,3"
+                                        Command="{Binding DataContext.ClearCommand, RelativeSource={RelativeSource AncestorType=Window}}" CommandParameter="{Binding}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <CheckBox Content="Normalise keyboard diagonals (W+D gives the same deflection as W)" IsChecked="{Binding NormalizeDiagonals}" Margin="0,8,0,0" />
+
+                <TextBlock Text="Mouse -> stick" Style="{StaticResource Label}" Margin="0,18,0,4" />
+                <CheckBox Content="Mouse movement drives a stick (while captured)" IsChecked="{Binding MouseEnabled}" />
+                <Grid Margin="0,8,0,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="200" /><ColumnDefinition Width="*" /><ColumnDefinition Width="60" /></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /><RowDefinition /></Grid.RowDefinitions>
+                    <TextBlock Text="Stick" VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding StickTargets}" SelectedItem="{Binding MouseTarget}" />
+                    <TextBlock Grid.Row="1" Text="Sensitivity" VerticalAlignment="Center" />
+                    <Slider Grid.Row="1" Grid.Column="1" Minimum="0.05" Maximum="5" SmallChange="0.05" Value="{Binding Sensitivity}" Margin="0,6" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Sensitivity, StringFormat={}{0:0.00}}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    <TextBlock Grid.Row="2" Text="Response curve" VerticalAlignment="Center" />
+                    <Slider Grid.Row="2" Grid.Column="1" Minimum="0.2" Maximum="4" SmallChange="0.1" Value="{Binding Curve}" Margin="0,6" />
+                    <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding Curve, StringFormat={}{0:0.0}}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    <TextBlock Grid.Row="3" Text="Output dead zone" VerticalAlignment="Center" />
+                    <Slider Grid.Row="3" Grid.Column="1" Minimum="0" Maximum="0.9" SmallChange="0.01" Value="{Binding MouseDeadZone}" Margin="0,6" />
+                    <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding MouseDeadZone, StringFormat={}{0:P0}}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    <TextBlock Grid.Row="4" Text="Hold after motion (ms)" VerticalAlignment="Center" />
+                    <Slider Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="500" SmallChange="5" IsSnapToTickEnabled="True" TickFrequency="5" Value="{Binding HoldMilliseconds}" Margin="0,6" />
+                    <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding HoldMilliseconds}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+                <WrapPanel Margin="0,4,0,0">
+                    <CheckBox Content="Invert X" IsChecked="{Binding InvertX}" Margin="0,0,18,0" />
+                    <CheckBox Content="Invert Y" IsChecked="{Binding InvertY}" />
+                </WrapPanel>
+
+                <TextBlock Text="Physical controller" Style="{StaticResource Label}" Margin="0,18,0,4" />
+                <Grid>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="200" /><ColumnDefinition Width="*" /><ColumnDefinition Width="60" /></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition /><RowDefinition /></Grid.RowDefinitions>
+                    <TextBlock Text="Stick dead zone" VerticalAlignment="Center" />
+                    <Slider Grid.Column="1" Minimum="0" Maximum="0.9" SmallChange="0.01" Value="{Binding StickDeadZone}" Margin="0,6" />
+                    <TextBlock Grid.Column="2" Text="{Binding StickDeadZone, StringFormat={}{0:P0}}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                    <TextBlock Grid.Row="1" Text="Trigger threshold" VerticalAlignment="Center" />
+                    <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="254" SmallChange="1" IsSnapToTickEnabled="True" TickFrequency="1" Value="{Binding TriggerThreshold}" Margin="0,6" />
+                    <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding TriggerThreshold}" VerticalAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+                <CheckBox Content="Rumble (forward the game's rumble to the physical controller)" IsChecked="{Binding Rumble}" Margin="0,4,0,0" />
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>

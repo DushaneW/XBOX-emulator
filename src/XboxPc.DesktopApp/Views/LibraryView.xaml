@@ -1,0 +1,386 @@
+<UserControl x:Class="XboxPc.DesktopApp.Views.LibraryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <!-- ================================ Collection ================================ -->
+        <DockPanel x:Name="CollectionPane" Visibility="{Binding IsDetailOpen, Converter={StaticResource Vis}, ConverterParameter=Invert}">
+            <DockPanel DockPanel.Dock="Top" Margin="0,8,0,22">
+                <Button DockPanel.Dock="Right" Style="{StaticResource SolidButton}" Command="{Binding NewCommand}" VerticalAlignment="Center" Margin="0" Padding="20,11">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE710;" FontFamily="{StaticResource IconFont}" FontSize="13" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="#0A0C0E" />
+                        <TextBlock Text="Add a game" VerticalAlignment="Center" Foreground="#0A0C0E" />
+                    </StackPanel>
+                </Button>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom">
+                    <TextBlock Text="My Games" Style="{StaticResource Display}" FontSize="40" LineHeight="44" />
+                    <TextBlock Text="{Binding CountText}" Foreground="{StaticResource FaintBrush}" FontSize="15" VerticalAlignment="Bottom" Margin="16,0,0,6" />
+                </StackPanel>
+            </DockPanel>
+
+            <!-- Toolbar row 1: search on the left, sort and layout on the right -->
+            <DockPanel DockPanel.Dock="Top" Margin="0,0,0,14" LastChildFill="False">
+                <Grid Width="280" DockPanel.Dock="Left" Margin="0,0,18,0" VerticalAlignment="Center">
+                    <TextBox x:Name="SearchBox" Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged, Delay=200}" Padding="38,9,10,9"
+                             AutomationProperties.Name="Search your games" />
+                    <TextBlock Text="&#xE721;" FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="{StaticResource FaintBrush}" IsHitTestVisible="False"
+                               VerticalAlignment="Center" Margin="14,0,0,0" HorizontalAlignment="Left" />
+                    <TextBlock Text="Search" Foreground="{StaticResource FaintBrush}" IsHitTestVisible="False" VerticalAlignment="Center" Margin="39,0,0,0"
+                               Visibility="{Binding SearchText, Converter={StaticResource Vis}, ConverterParameter=Invert}" />
+                </Grid>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <ComboBox ItemsSource="{Binding SortOptions}" SelectedItem="{Binding Sort}" DisplayMemberPath="Label" Width="190" Margin="0,0,14,0" AutomationProperties.Name="Sort" />
+                    <RadioButton Style="{StaticResource SegmentItem}" GroupName="layout" IsChecked="{Binding GridLayout}" ToolTip="Cover grid" AutomationProperties.Name="Grid layout">
+                        <TextBlock Text="&#xF0E2;" FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                    </RadioButton>
+                    <RadioButton Style="{StaticResource SegmentItem}" GroupName="layout" IsChecked="{Binding RowLayout}" ToolTip="Large covers in a row" AutomationProperties.Name="Row layout" Margin="0">
+                        <TextBlock Text="&#xE8A9;" FontFamily="{StaticResource IconFont}" FontSize="14" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=RadioButton}}" />
+                    </RadioButton>
+                </StackPanel>
+            </DockPanel>
+            <!-- Toolbar row 2: generation filter and favourites (wraps on narrow windows) -->
+            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,24">
+                <ItemsControl ItemsSource="{Binding GenerationFilters}" Focusable="False" VerticalAlignment="Center">
+                    <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <RadioButton Style="{StaticResource SegmentItem}" GroupName="gen" Content="{Binding Label}"
+                                         Command="{Binding DataContext.SetFilterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                <RadioButton.IsChecked>
+                                    <MultiBinding Converter="{StaticResource Same}" Mode="OneWay">
+                                        <Binding />
+                                        <Binding Path="DataContext.GenerationFilter" RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                    </MultiBinding>
+                                </RadioButton.IsChecked>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ToggleButton Style="{StaticResource ToggleChip}" IsChecked="{Binding FavoritesOnly}" Margin="8,0,0,0" VerticalAlignment="Center"
+                              AutomationProperties.Name="Favourites only">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE735;" FontFamily="{StaticResource IconFont}" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"
+                                   Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                        <TextBlock Text="Favourites" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}" />
+                    </StackPanel>
+                </ToggleButton>
+
+            </WrapPanel>
+
+            <Grid>
+                <!-- Empty states -->
+                <StackPanel Visibility="{Binding IsEmpty, Converter={StaticResource Vis}}" HorizontalAlignment="Left" Margin="0,30,0,0" MaxWidth="560">
+                    <StackPanel Visibility="{Binding IsFiltered, Converter={StaticResource Vis}}">
+                        <TextBlock Text="Nothing matches" Style="{StaticResource H2}" FontSize="24" Margin="0" />
+                        <TextBlock Text="No title in your library fits this search and filter." Style="{StaticResource Muted}" FontSize="15" Margin="0,8,0,24" />
+                        <Button Content="Clear search" Command="{Binding ClearSearchCommand}" HorizontalAlignment="Left" />
+                    </StackPanel>
+                    <StackPanel Visibility="{Binding IsFiltered, Converter={StaticResource Vis}, ConverterParameter=Invert}">
+                        <TextBlock Text="Your library is empty" Style="{StaticResource H2}" FontSize="24" Margin="0" />
+                        <TextBlock Text="Add an Original Xbox .xbe program, give it a name and, if you like, your own cover art." Style="{StaticResource Muted}" FontSize="15" Margin="0,8,0,24" />
+                        <Button Style="{StaticResource SolidButton}" Content="Add a game" Command="{Binding NewCommand}" HorizontalAlignment="Left" Padding="24,12" />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Grid layout -->
+                <ScrollViewer x:Name="GridScroller" VerticalScrollBarVisibility="Auto" Focusable="False" Padding="6,6,0,30" Margin="-6,0,0,0">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding RowLayout}" Value="True"><Setter Property="Visibility" Value="Collapsed" /></DataTrigger>
+                                <DataTrigger Binding="{Binding IsEmpty}" Value="True"><Setter Property="Visibility" Value="Collapsed" /></DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <ItemsControl x:Name="GridItems" ItemsSource="{Binding Items}" Focusable="False">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource CoverTile}" Margin="0,0,24,30" Tag="{Binding Id}"
+                                        Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Row layout: large covers -->
+                <ScrollViewer x:Name="RowScroller" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" Focusable="False" Padding="10,10,10,10" Margin="-10,0" VerticalAlignment="Top">
+                    <ScrollViewer.Style>
+                        <Style TargetType="ScrollViewer">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding RowLayout}" Value="True" />
+                                        <Condition Binding="{Binding IsEmpty}" Value="False" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ScrollViewer.Style>
+                    <ItemsControl x:Name="RowItems" ItemsSource="{Binding Items}" Focusable="False">
+                        <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal" /></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource CoverTile}" Width="260" Margin="0,0,30,0" Tag="{Binding Id}"
+                                        Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </DockPanel>
+
+        <!-- ================================ Game page ================================ -->
+        <ContentControl x:Name="DetailPane" Content="{Binding Editor}" Focusable="False"
+                        Visibility="{Binding IsDetailOpen, Converter={StaticResource Vis}}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Focusable="False">
+                        <StackPanel Margin="0,0,0,40">
+                            <Button x:Name="BackButton" Style="{StaticResource TextButton}" Command="{Binding BackCommand}" HorizontalAlignment="Left" Margin="0,4,0,22"
+                                    AutomationProperties.Name="Back to My Games">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE72B;" FontFamily="{StaticResource IconFont}" FontSize="12" VerticalAlignment="Center" Margin="0,0,10,0"
+                                               Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    <TextBlock Text="My Games" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" />
+                                    <TextBlock Text="   B / Esc" Foreground="{StaticResource FaintBrush}" FontWeight="Normal" />
+                                </StackPanel>
+                            </Button>
+
+                            <!-- Header -->
+                            <Grid Visibility="{Binding IsNew, Converter={StaticResource Vis}, ConverterParameter=Invert}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="250" Height="350" VerticalAlignment="Top">
+                                    <Border CornerRadius="8" Effect="{DynamicResource CardShadow}">
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Color="#262B31" Offset="0" />
+                                                <GradientStop Color="#14171A" Offset="1" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                        <TextBlock Text="{Binding Title}" FontFamily="{StaticResource DisplayFont}" FontSize="26" FontWeight="Bold" Foreground="#353C43"
+                                                   HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center" Margin="22" />
+                                    </Border>
+                                    <Border CornerRadius="8">
+                                        <Border.Background>
+                                            <ImageBrush ImageSource="{Binding CoverPreview, Converter={StaticResource Img}, ConverterParameter=560}" Stretch="UniformToFill" />
+                                        </Border.Background>
+                                    </Border>
+                                </Grid>
+
+                                <StackPanel Grid.Column="1" Margin="44,6,0,0">
+                                    <TextBlock Text="{Binding GenerationText}" Style="{StaticResource Eyebrow}" FontSize="13" />
+                                    <TextBlock Text="{Binding Title}" Style="{StaticResource Display}" FontSize="50" LineHeight="54" Margin="0,8,0,0" />
+                                    <WrapPanel Margin="0,18,0,0">
+                                        <Border Style="{StaticResource Badge}" Margin="0,0,12,0" Padding="10,4" ToolTip="{Binding CompatibilitySource}">
+                                            <TextBlock Text="{Binding CompatibilityText}" FontWeight="SemiBold" FontSize="13" />
+                                        </Border>
+                                        <TextBlock Text="{Binding LastLaunchedText}" Style="{StaticResource Muted}" FontSize="14" VerticalAlignment="Center" />
+                                    </WrapPanel>
+
+                                    <!-- Actions -->
+                                    <StackPanel Orientation="Horizontal" Margin="0,30,0,0">
+                                        <Button x:Name="PlayButton" Style="{StaticResource PrimaryButton}" Command="{Binding PlayCommand}" Padding="30,13" FontSize="16"
+                                                Visibility="{Binding CanPlay, Converter={StaticResource Vis}}" AutomationProperties.Name="Play">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE768;" FontFamily="{StaticResource IconFont}" FontSize="15" VerticalAlignment="Center" Margin="0,0,12,0" Foreground="#06120A" />
+                                                <TextBlock Text="Play" VerticalAlignment="Center" Foreground="#06120A" />
+                                            </StackPanel>
+                                        </Button>
+                                        <Button Style="{StaticResource GhostButton}" Command="{Binding CancelLaunchCommand}" Content="Cancel" Padding="22,13" FontSize="16"
+                                                Visibility="{Binding IsLaunching, Converter={StaticResource Vis}}" />
+                                        <Button Style="{StaticResource IconButton}" Width="48" Height="48" Command="{Binding ToggleFavoriteCommand}" AutomationProperties.Name="Favourite"
+                                                ToolTip="Favourite">
+                                            <TextBlock FontFamily="{StaticResource IconFont}" FontSize="17">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="&#xE734;" />
+                                                        <Setter Property="Foreground" Value="{StaticResource TextBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsFavorite}" Value="True">
+                                                                <Setter Property="Text" Value="&#xE735;" />
+                                                                <Setter Property="Foreground" Value="{StaticResource Accent2Brush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Button>
+                                        <Button Style="{StaticResource GhostButton}" Command="{Binding InputSettingsCommand}" Padding="20,13" FontSize="15"
+                                                Visibility="{Binding HasXbe, Converter={StaticResource Vis}}" ToolTip="Keyboard, mouse and controller for this game">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE7FC;" FontFamily="{StaticResource IconFont}" FontSize="15" VerticalAlignment="Center" Margin="0,0,10,0" />
+                                                <TextBlock Text="Input settings" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="2,2,0,0" Visibility="{Binding CanPlay, Converter={StaticResource Vis}, ConverterParameter=Invert}">
+                                        <TextBlock Text="&#xE946;" FontFamily="{StaticResource IconFont}" FontSize="13" Foreground="{StaticResource FaintBrush}" Margin="0,3,10,0" />
+                                        <TextBlock Text="{Binding PlayBlock}" Style="{StaticResource Muted}" FontSize="13" MaxWidth="620" />
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding LaunchStatus}" Foreground="{StaticResource AccentBrush}" FontSize="13" Margin="2,4,0,0"
+                                               Visibility="{Binding LaunchStatus, Converter={StaticResource Vis}}" />
+                                </StackPanel>
+                            </Grid>
+
+                            <TextBlock Text="Add a game" Style="{StaticResource Display}" FontSize="40" LineHeight="44"
+                                       Visibility="{Binding IsNew, Converter={StaticResource Vis}}" />
+
+                            <!-- Sections -->
+                            <StackPanel Orientation="Horizontal" Margin="0,40,0,24" Visibility="{Binding IsNew, Converter={StaticResource Vis}, ConverterParameter=Invert}">
+                                <RadioButton Style="{StaticResource SegmentItem}" GroupName="sec" Content="Overview" Command="{Binding SetSectionCommand}" CommandParameter="overview"
+                                             IsChecked="{Binding Section, Mode=OneWay, Converter={StaticResource EqB}, ConverterParameter=overview}" />
+                                <RadioButton Style="{StaticResource SegmentItem}" GroupName="sec" Content="Compatibility" Command="{Binding SetSectionCommand}" CommandParameter="compat"
+                                             IsChecked="{Binding Section, Mode=OneWay, Converter={StaticResource EqB}, ConverterParameter=compat}" />
+                                <RadioButton Style="{StaticResource SegmentItem}" GroupName="sec" Content="Save data" Command="{Binding SetSectionCommand}" CommandParameter="save"
+                                             IsChecked="{Binding Section, Mode=OneWay, Converter={StaticResource EqB}, ConverterParameter=save}"
+                                             Visibility="{Binding HasXbe, Converter={StaticResource Vis}}" />
+                                <RadioButton Style="{StaticResource SegmentItem}" GroupName="sec" Content="Diagnostics" Command="{Binding SetSectionCommand}" CommandParameter="diag"
+                                             IsChecked="{Binding Section, Mode=OneWay, Converter={StaticResource EqB}, ConverterParameter=diag}" />
+                                <RadioButton Style="{StaticResource SegmentItem}" GroupName="sec" Content="Edit details" Command="{Binding SetSectionCommand}" CommandParameter="edit"
+                                             IsChecked="{Binding Section, Mode=OneWay, Converter={StaticResource EqB}, ConverterParameter=edit}" />
+                            </StackPanel>
+
+                            <!-- Overview -->
+                            <Grid Visibility="{Binding Section, Converter={StaticResource Eq}, ConverterParameter=overview}" MaxWidth="900" HorizontalAlignment="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="170" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Notes" Style="{StaticResource Muted}" Margin="0,0,0,18" />
+                                <TextBlock Grid.Column="1" Text="{Binding Notes}" FontSize="15" Margin="0,0,0,18" />
+                                <TextBlock Grid.Row="1" Text="Runtime" Style="{StaticResource Muted}" Margin="0,0,0,18" />
+                                <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding RuntimeStateText}" FontSize="15" Margin="0,0,0,18" />
+                                <TextBlock Grid.Row="2" Text="Program file" Style="{StaticResource Muted}" Margin="0,0,0,18" />
+                                <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ContentPathDisplay}" Style="{StaticResource Mono}" FontSize="13" TextWrapping="Wrap" Margin="0,2,0,18" />
+                                <TextBlock Grid.Row="3" Text="Library" Style="{StaticResource Muted}" />
+                                <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding AddedText}" FontSize="15" />
+                            </Grid>
+
+                            <!-- Compatibility -->
+                            <StackPanel Visibility="{Binding Section, Converter={StaticResource Eq}, ConverterParameter=compat}" MaxWidth="900" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding CompatibilityText}" Style="{StaticResource H1}" Margin="0" />
+                                <TextBlock Text="{Binding CompatibilitySource}" Style="{StaticResource Muted}" FontSize="14" Margin="0,6,0,0" />
+                                <TextBlock Text="{Binding RegressionText}" Foreground="{StaticResource WarnBrush}" FontSize="14" Margin="0,6,0,0"
+                                           Visibility="{Binding RegressionText, Converter={StaticResource Vis}}" />
+                                <Button Content="Add a test report" Command="{Binding AddReportCommand}" HorizontalAlignment="Left" Margin="0,22,0,22" />
+                                <ItemsControl ItemsSource="{Binding History}" Focusable="False">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,14">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="150" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text="{Binding When}" Style="{StaticResource Muted}" />
+                                                <TextBlock Grid.Column="1" Text="{Binding Status}" FontWeight="SemiBold" />
+                                                <StackPanel Grid.Column="2">
+                                                    <TextBlock Text="{Binding SourceText}" />
+                                                    <TextBlock Text="{Binding RuntimeText}" Style="{StaticResource Mono}" />
+                                                    <TextBlock Text="{Binding Evidence}" Style="{StaticResource Muted}" FontSize="12" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Save data -->
+                            <StackPanel Visibility="{Binding Section, Converter={StaticResource Eq}, ConverterParameter=save}" MaxWidth="900" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding SaveSummary}" FontSize="16" />
+                                <TextBlock Text="The game's E: drive on this PC" Style="{StaticResource Muted}" Margin="0,22,0,6" />
+                                <TextBlock Text="{Binding SaveFolderDisplay}" Style="{StaticResource Mono}" FontSize="13" TextWrapping="Wrap" />
+                                <Button Content="Open folder" Command="{Binding OpenSaveFolderCommand}" HorizontalAlignment="Left" Margin="0,20,0,0" />
+                            </StackPanel>
+
+                            <!-- Diagnostics -->
+                            <StackPanel Visibility="{Binding Section, Converter={StaticResource Eq}, ConverterParameter=diag}" MaxWidth="900" HorizontalAlignment="Left">
+                                <Grid Visibility="{Binding HasXbe, Converter={StaticResource Vis}}" Margin="0,0,0,24">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="170" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Kernel imports" Style="{StaticResource Muted}" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Column="1" Text="{Binding Xbe.ImportsText}" FontSize="15" Margin="0,0,0,16">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{StaticResource WarnBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Xbe.AllImportsImplemented}" Value="True"><Setter Property="Foreground" Value="{StaticResource TextBrush}" /></DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                    <TextBlock Grid.Row="1" Text="Title ID" Style="{StaticResource Muted}" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Xbe.TitleIdText}" Style="{StaticResource Mono}" FontSize="14" Foreground="{StaticResource TextBrush}" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="2" Text="Title in the program" Style="{StaticResource Muted}" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding Xbe.TitleName}" FontSize="15" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="3" Text="Linked libraries" Style="{StaticResource Muted}" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding Xbe.Libraries}" FontSize="14" Margin="0,0,0,16" />
+                                    <TextBlock Grid.Row="4" Text="File" Style="{StaticResource Muted}" />
+                                    <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Xbe.SizeText}" FontSize="14" />
+                                        <TextBlock Text="{Binding Xbe.SectionCount, StringFormat=' · {0} sections'}" FontSize="14" Foreground="{StaticResource MutedBrush}" />
+                                    </StackPanel>
+                                </Grid>
+                                <TextBlock Text="While the game runs, the in-game menu (F1, or Back + Start) shows its debug output and any hardware the emulator does not model yet."
+                                           Style="{StaticResource Muted}" FontSize="14" Visibility="{Binding HasXbe, Converter={StaticResource Vis}}" />
+                                <StackPanel Visibility="{Binding LaunchOutput, Converter={StaticResource Vis}}" Margin="0,10,0,0">
+                                    <TextBlock Text="Last run output" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                                    <TextBlock Text="{Binding LaunchOutput}" Style="{StaticResource Mono}" Foreground="{StaticResource TextBrush}" TextWrapping="Wrap" FontSize="13" />
+                                </StackPanel>
+                                <StackPanel Visibility="{Binding LaunchDiagnostics, Converter={StaticResource Vis}}" Margin="0,18,0,0">
+                                    <TextBlock Text="Runtime diagnostics" Style="{StaticResource Muted}" Margin="0,0,0,6" />
+                                    <TextBlock Text="{Binding LaunchDiagnostics}" Style="{StaticResource Mono}" TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Edit details / new entry -->
+                            <StackPanel Visibility="{Binding Section, Converter={StaticResource Eq}, ConverterParameter=edit}" MaxWidth="760" HorizontalAlignment="Left" Margin="0,10,0,0">
+                                <TextBlock Text="Name" Style="{StaticResource Label}" />
+                                <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Name" />
+                                <TextBlock Text="Console generation" Style="{StaticResource Label}" />
+                                <ComboBox ItemsSource="{Binding Generations}" SelectedItem="{Binding Generation}" DisplayMemberPath="Label" HorizontalAlignment="Left" Width="300" />
+                                <TextBlock Text="Program file (.xbe for Original Xbox)" Style="{StaticResource Label}" />
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Content="Browse" Command="{Binding BrowseContentCommand}" Margin="10,0,0,0" />
+                                    <TextBox Text="{Binding ContentPath, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Program file" />
+                                </DockPanel>
+                                <TextBlock Text="Cover art (your own or licensed image)" Style="{StaticResource Label}" />
+                                <DockPanel>
+                                    <Button DockPanel.Dock="Right" Content="Remove" Command="{Binding ClearCoverCommand}" Margin="10,0,0,0" />
+                                    <Button DockPanel.Dock="Right" Content="Browse" Command="{Binding BrowseCoverCommand}" Margin="10,0,0,0" />
+                                    <TextBox Text="{Binding CoverArtPath, UpdateSourceTrigger=PropertyChanged}" AutomationProperties.Name="Cover art" />
+                                </DockPanel>
+                                <TextBlock Text="Runtime" Style="{StaticResource Label}" />
+                                <ComboBox ItemsSource="{Binding RuntimeOptions}" SelectedItem="{Binding SelectedRuntime}" DisplayMemberPath="DisplayName" HorizontalAlignment="Left" Width="300" />
+                                <TextBlock Text="{Binding RuntimeStateText}" Style="{StaticResource Muted}" FontSize="13" Margin="0,8,0,0" />
+                                <TextBlock Text="Launch timeout for test runtimes (seconds)" Style="{StaticResource Label}" />
+                                <TextBox Text="{Binding TimeoutText, UpdateSourceTrigger=PropertyChanged}" Width="120" HorizontalAlignment="Left" />
+                                <TextBlock Text="Notes" Style="{StaticResource Label}" />
+                                <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="90" VerticalContentAlignment="Top" />
+                                <StackPanel Orientation="Horizontal" Margin="0,26,0,0">
+                                    <Button Style="{StaticResource SolidButton}" Content="Save" Command="{Binding SaveCommand}" Padding="28,11" />
+                                    <Button Style="{StaticResource DangerButton}" Content="Remove from library" Command="{Binding DeleteCommand}"
+                                            Visibility="{Binding IsNew, Converter={StaticResource Vis}, ConverterParameter=Invert}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </ScrollViewer>
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
+    </Grid>
+</UserControl>

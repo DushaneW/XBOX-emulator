@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Direct3D 12 backend for the NV2A: draws the emulated GPU's work on the host GPU at a chosen resolution scale. -->
+  <PropertyGroup>
+    <TargetFramework>$(XpcTfm)-windows</TargetFramework>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup><ProjectReference Include="..\XboxPc.Emulation.Gpu.Nv2a\XboxPc.Emulation.Gpu.Nv2a.csproj" /></ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Vortice.D3DCompiler" Version="3.8.3" />
+    <PackageReference Include="Vortice.Direct3D12" Version="3.8.3" />
+    <PackageReference Include="Vortice.DXGI" Version="3.8.3" />
+  </ItemGroup>
+</Project>
