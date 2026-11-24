@@ -47,8 +47,8 @@ The covers in the screenshots are frames the bundled test programs render themse
 ## Build and run
 
 ```powershell
-git clone <this repository's URL>
-cd <the cloned folder>
+git clone https://github.com/DushaneW/XBOX-emulator.git
+cd XBOX-emulator
 dotnet build XboxPc.sln -c Release
 dotnet run --project src/XboxPc.DesktopApp -c Release
 ```
